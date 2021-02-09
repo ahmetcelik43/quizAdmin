@@ -1,0 +1,13 @@
+{
+    "name": "dell/guruable-master",
+    "description": "quiz",
+    "authors": [
+        {
+            "name": "ahmetcelik43",
+            "email": "ahmet.celik5443@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "7.0"
+    }
+}

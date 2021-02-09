@@ -1,0 +1,23 @@
+body
+{
+    overflow-x: hidden;
+    width: 100%;
+    height:100%;
+}
+.login
+{   
+    height:min-content;
+    position: absolute;
+    top:20%;
+    text-align:center;
+}
+.login-parent
+{
+    display:flex;
+    justify-content: center;
+    box-shadow:0 0 1px 0 grey;
+}
+.needs-validation .form-row
+{
+    margin-top:10px;
+}

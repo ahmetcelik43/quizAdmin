@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteRule ^$ anasayfa.php [QSA,L]
+RewriteRule ^login$ giris.php [QSA,L]
+
