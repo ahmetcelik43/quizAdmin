@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Quiz Admin - Sorular</title>
+    <!-- HTML5 Shim and Respond.js IE9 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      <!-- Meta -->
+      {{include('head.html')}}
+
+
+  </head>
+
+  <body>
+      
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+
+            {{include('navbar.html')}}
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    {{include('sidenav.html')}}
+
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+
+                                    <div class="page-body">
+                                        <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Kategoriler
+                                                <button style="float:right" class="btn btn-outline-primary" onclick="soruEkle()" type="button">Soru Ekle</button>
+                                                <a href="{{kategoriLink}}" style="color:red;" type="button">Kategori Ekle</a>
+
+                                            </div>
+                                            <div class="card-block">
+                                            <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            ID
+                                            </td>
+                                            <td>
+                                                Soru
+                                              </td>
+                                            <td>
+                                            Kategori Adı
+                                            </td>
+                                           
+                                            <td>
+                                            Tarih
+                                            </td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if sorular | length == 0 %}
+                                                <tr>
+                                                    <td colspan="12">Soru Yok !</td>
+                                                </tr>
+                                                {% else %}
+
+                                                {% for i in sorular %}
+                                                {% set soruID = i['soruID'] %}
+                                                {% set soru = i['soru'] %}
+                                                {% set kategori = i['kategori'] %}
+                                                {% set kategoriID = i['kategoriID'] %}
+                                                {% set tarih = i['createdAt'] %}
+
+                                               
+                                                <tr><td><button title="Güncelle" onclick="guncelle('{{soruID}}', '{{soru}}' , '{{kategoriID}}')"
+                                                    class="btn btn-xs btn-outline-primary"><i class="ti-pencil-alt"></i></button>
+                                                    <button title="Sil" class="btn btn-xs btn-outline-danger" onclick="sil('{{soruID}}')">
+                                                    <i class="ti-close"></i></button></td><td>{{soruID}}</td> <td>{{soru}}</td> <td>{{kategori}}</td> <td>{{tarih}}</td></tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tbody>
+                                          </table>
+                                           
+                                            </div>
+                                        </div>
+                                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="styleSelector">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fixed-button">
+                    <a class="btn btn-md btn-primary">
+                       Yukarı
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="kategoriModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    {{kategori[1]["ad"]}}
+
+                <form class="soru" novalidate>
+                <div class="form-row">                      
+                    <label for="validationCustomUsername">Soru</label>
+                    <div class="input-group">
+                     <textarea class="form-control" id="soru" id="soru" cols="30" rows="3" required></textarea>
+                 
+                      
+                    </div>
+                  
+                </div>
+                <div class="form-row">                      
+                <label for="validationCustomUsername">Kategori</label>
+                <div class="input-group">
+                <select class="form-control" id="kategori">
+                   <option disabled selected>Seçin</option>
+                   {% for i in kategoriler %}
+                   {% set id = i['id'] %}
+                   {% set ad = i['ad'] %}
+                   <option value="{{ id }}">{{ad}}</option>
+                   {% endfor %}
+                </select>
+                  
+                </div>
+              
+            </div>
+               
+               
+                <div class="form-row"> 
+                    <div class="col-md-12 mb-3">
+                       <button class="btn btn-outline-success" type="submit">Kaydet</button>
+                      </div>
+                </div>  
+            </form>
+                
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+{{include('script.html')}}
+
+
+<script>
+var window = $(window);
+var nav = $('.fixed-button');
+    window.scroll(function(){
+        if (window.scrollTop() >= 200) {
+         nav.addClass('active');
+     }
+     else {
+         nav.removeClass('active');
+     }
+ });
+ function cikis ()
+ {
+     document.cookie = "kullanici=";
+     window.location.href = "/api/admin/login";
+ }
+</script>
+<script>
+
+    var forms = document.getElementsByClassName('soru');
+    var action = "" ,id;
+    Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        
+        event.preventDefault();
+        event.stopPropagation();
+        if (form.checkValidity() === true) {
+          action == "ekle" && ekleRequest();
+          action == "guncelle" && guncelleRequest(id);
+        }
+        else
+        toastr.error("Alanları Doldurunuz");
+      }, false);
+    });
+     
+      function soruEkle()
+      {
+         $('#kategoriModal').modal('show');
+         $('.modal-title').html('Soru Ekle');
+         $('#soru').trigger('focus')
+         action = "ekle";  
+    
+      }
+      function guncelle(id_ , soru, kategoriID)
+      {
+        $('#kategoriModal').modal('show');
+        $('.modal-title').html('Soru Güncelle');
+        $('#soru').val(soru);
+        $('#kategori').val(kategoriID);
+        action = "guncelle";  
+        id = id_;
+      }
+      function sil(id_)
+      {
+        
+        var data_ = JSON.stringify({ action :"sil" , "id":parseInt(id_)});
+    
+         $.ajax(
+            {
+                url:"https://quizapp1234.herokuapp.com/soru",
+                method:"POST",
+                crossDomain: true,   
+                type:'application/json',
+                data: data_
+            }
+        ).done(function(res){
+            window.location.reload();
+        }).fail(function(err){
+            toastr.error("Hata");
+        });
+    
+      }
+      function guncelleRequest(id)
+      {
+        var data = JSON.stringify({action :"guncelle"  ,id:id , soru:$('#soru').val().toString().trim() ,
+             kategoriID :$('#kategori').val().toString().trim()  });
+         $.ajax(
+            {
+                url:"https://quizapp1234.herokuapp.com/soru",
+                method:"POST",
+                crossDomain: true,   
+                type:'application/json',
+                data: data
+            }
+        ).done(function(res){
+            window.location.reload();
+        }).fail(function(err){
+            toastr.error("Hata");
+        });
+      }
+      function ekleRequest()
+      {
+        var data = JSON.stringify({ soru :$('#soru').val().toString().trim(), 
+            kategoriID :parseInt($('#kategori').val().toString().trim()) ,action : "ekle" });
+         $.ajax(
+            {
+                url:"https://quizapp1234.herokuapp.com/soru",
+                method:"POST",
+                crossDomain: true,   
+                type:'application/json',
+                data: data
+            }
+        ).done(function(res){
+            window.location.reload();
+        }).fail(function(err){
+            toastr.error("Hata");
+        });
+      }
+      </script>
+</body>
+
+</html>

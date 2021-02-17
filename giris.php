@@ -1,5 +1,4 @@
 <?php
-require 'index.php';
 
 echo <<<EOF
 <!DOCTYPE html>
@@ -78,13 +77,13 @@ Array.prototype.filter.call(forms, function(form) {
       
     $.ajax(
         {
-            url:"https://quizapp1234.herokuapp.com/posta="+$('input[type="email"]').val() + "&sifre=" + $('input[type="password"]').val(),
+            url:"https://quizapp1234.herokuapp.com?posta="+$('input[type="email"]').val() + "&sifre=" + $('input[type="password"]').val(),
             method:"GET",
-            cors: true ,
-            headers:{ 'Access-Control-Allow-Origin': '*', }
+            crossDomain: true,   
+            type:'application/json',
         }
     ).done(function(res){
-      document.cookie = "kullaniciAdi=res.kullaniciAdi";
+      document.cookie = "kullanici=" + JSON.stringify(res);
       window.location.href = "http://localhost:90/api/admin";
 
       //header("Location: http://localhost:90/api/admin");

@@ -1,135 +1,160 @@
+
 <?php
-require 'vendor/autoload.php';
-/*
-use GuzzleHttp\Client;
+include "db.php";
+include "function.php";
+$jsonArray = array(); // array değişkenimiz bunu en alta json objesine çevireceğiz. 
+//$jsonArray["hata"] = FALSE; // Başlangıçta hata yok olarak kabul edelim. 
+$_code = 200; // HTTP Ok olarak durumu kabul edelim. 
+//https://fast-temple-97418.herokuapp.com
+    // üye ekleme kısmı burada olacak. CREATE İşlemi 
+//register
+  
+
+    // Access-Control headers are received during OPTIONS requests
+  
+date_default_timezone_set('Europe/Istanbul'); 
+ if($_SERVER['REQUEST_METHOD'] == "POST") {
+	 
+	$gelen_veri = json_decode(file_get_contents("php://input")); // veriyi alıp diziye atadık.
+    
+	 //$kullaniciAdi = ($_POST["kullaniciAdi"]);
+    //$adSoyad =($_POST["adSoyad"]);
+    //$sifre = ($_POST["sifre"]);
+    //$posta = ($_POST["posta"]);
+    //$telefon = addslashes($_POST["telefon"]);
+    
+    // Kontrollerimizi yapalım.
+    // gelen kullanıcı adı veya e-posta veri tabanında kayıtlı mı kontrol edelim. 
+     //echo($gelen_veri->kategoriAdi);die();
+	 if($gelen_veri->action == "ekle")
+	 {
+		 
+    if(!isset($gelen_veri->soru) || empty($gelen_veri->soru) || !isset($gelen_veri->kategoriID) || empty($gelen_veri->kategoriID)) {
+    	$_code = 400; 
+		$jsonArray["hata"] = TRUE; // bir hata olduğu bildirilsin.
+        $jsonArray["hataMesaj"] = "Boş Alan Bırakmayınız."; // Hatanın neden kaynaklı olduğu belirtilsin.
+	}
 
 
    
-    $jsonArray = array(); // array değişkenimiz bunu en alta json objesine çevireceğiz. 
-    $jsonArray["hata"] = FALSE; // Başlangıçta hata yok olarak kabul edelim. 
-    $_code = 200; // HTTP Ok olarak durumu kabul edelim. 
-    //https://fast-temple-97418.herokuapp.com
-        // üye ekleme kısmı burada olacak. CREATE İşlemi 
-        //login
-     if($_SERVER['REQUEST_METHOD'] == "POST") {
-         
-        $gelen_veri = json_decode(file_get_contents("php://input")); // veriyi alıp diziye atadık.
-      
-       
-        if(isset($gelen_veri->posta) && !empty($gelen_veri->posta) && isset($gelen_veri->sifre) &&  !empty($gelen_veri->sifre) ) {
-            
-            $client = new Client([
-                // Base URI is used with relative requests
-                'base_uri' => 'https://quizapp1234.herokuapp.com/',
-                // You can set any number of default request options.
-                'timeout'  => 5.0,
-            ]);
-            $data = ["posta"=>$gelen_veri->posta , "sifre"=> $gelen_veri->sifre];
-            $response = $client->request('GET', '/user',['body' =>json_encode($data)]);     
-            if($response->getStatusCode() === 200)
-            {
-                $_COOKIE["user"] = $response->getBody();
-               
-            }
-            else
-            {
-                $_code = 403;
-                $jsonArray["hata"] = TRUE;
-                $jsonArray["hataMesaj"] = "Giriş Başarısız";
-            }
-            
-        }
-        else{
-            $_code = 403;
-            $jsonArray["hata"] = TRUE;
-             $jsonArray["hataMesaj"] = "Bilgiler Girilmedi";
-        }
-        }
-    
-    else if($_SERVER['REQUEST_METHOD'] == "PUT") {
-         $gelen_veri = json_decode(file_get_contents("php://input")); // veriyi alıp diziye atadık.
-            
-            // basitçe bi kontrol yaptık veriler varmı yokmu diye 
-         if(	isset($gelen_veri->kullanici_adi) && 
-                 isset($gelen_veri->ad_soyad) && 
-                 isset($gelen_veri->posta) && 
-                 isset($gelen_veri->user_id) && 
-                 isset($gelen_veri->telefon)
-             ) {
-                 
-                 // veriler var ise güncelleme yapıyoruz.
-                    $q = $db->prepare("UPDATE uyeler SET kullaniciAdi= :kadi, adSoyad= :ad_soyad, posta= :posta, telefon= :telefon WHERE id= :user_id ");
-                     $update = $q->execute(array(
-                             "kadi" => $gelen_veri->kullanici_adi,
-                             "ad_soyad" => $gelen_veri->ad_soyad,
-                             "posta" => $gelen_veri->posta,
-                             "telefon" => $gelen_veri->telefon,
-                             "user_id" => $gelen_veri->user_id	 	
-                     ));
-                     // güncelleme başarılı ise bilgi veriyoruz. 
-                     if($update) {
-                         $_code = 200;
-                         $jsonArray["mesaj"] = "Güncelleme Başarılı";
-                     }
-                     else {
-                         // güncelleme başarısız ise bilgi veriyoruz. 
-                         $_code = 400;
-                        $jsonArray["hata"] = TRUE;
-                         $jsonArray["hataMesaj"] = "Sistemsel Bir Hata Oluştu";
-                    }
-            }else {
-                // gerekli veriler eksik gelirse apiyi kulanacaklara hangi bilgileri istediğimizi bildirdik. 
-                $_code = 400;
-                $jsonArray["hata"] = TRUE;
-                 $jsonArray["hataMesaj"] = "kullanici_adi,ad_soyad,posta,telefon,user_id Verilerini json olarak göndermediniz.";
-            }
-    } else if($_SERVER['REQUEST_METHOD'] == "DELETE") {
-    
-        // üye silme işlemi burada olacak. DELETE işlemi 
-        if(isset($_GET["user_id"]) && !empty(trim($_GET["user_id"]))) {
-            $user_id = intval($_GET["user_id"]);
-            $userVarMi = $db->query("select * from uyeler where id='$user_id'")->rowCount();
-            if($userVarMi) {
-                
-                $sil = $db->query("delete from uyeler where id='$user_id'");
+
+	else
+	 {
+            if($db->query("SELECT * from categorys WHERE  id = '$gelen_veri->kategoriID'")->rowCount() ==0)
+	    {
+		    $_code = 400; 
+        $jsonArray["hataMesaj"] = "Kategori Bulunamadı !"; 
+	    }
+	    else {
+		    
+
+			$ex = $db->prepare("insert into sorular(soru,kategoriID,createdAt) values(:soru,:kategoriID,:createdAt)");
+			$ekle2 = $ex->execute(array(
+            "soru" => $gelen_veri->soru,
+            "kategoriID"=>$gelen_veri->kategoriID,
+			"createdAt" => date("Y-m-d H:i:s"),
+			
+		));
+		if($ekle2) {
+			$_code = 201;
+			$jsonArray["mesaj"] = "Eklendi";
+		}else {
+			$_code = 400;
+			 $jsonArray["hata"] = TRUE; // bir hata olduğu bildirilsin.
+       		 $jsonArray["hataMesaj"] = "Sistem Hatası.";
+		}
+	    }
+    }
+}
+	 
+	 else if($gelen_veri->action == "guncelle")
+	 {
+		 if(	isset($gelen_veri->id) && 
+     		!empty($gelen_veri->id) && isset($gelen_veri->soru) && !empty($gelen_veri->soru && isset($gelen_veri->kategoriID) && !empty($gelen_veri->kategoriID)
+     		
+     	)) {
+     		
+			   if($db->query("SELECT * from categorys WHERE  id='$gelen_veri->kategoriID'")->rowCount() == 0)
+	    {
+		    $_code = 400; 
+                    $jsonArray["hataMesaj"] = "Kategori Bulunamadı !"; 
+	                      }
+			else
+			{
+				$q = $db->prepare("UPDATE sorular SET soru= :soru , kategoriID = :kategoriID  WHERE id= :id ");
+			 	$update = $q->execute(array(
+			 			"soru" => trim($gelen_veri->soru),
+                         "kategoriID" => $gelen_veri->kategoriID,
+                         "id"=>$gelen_veri->id
+			 				 	
+			 	));
+			 	// güncelleme başarılı ise bilgi veriyoruz. 
+			 	if($update) {
+			 		$_code = 200;
+			 		//$jsonArray["mesaj"] = "Güncelleme Başarılı";
+			 	}
+			 	else {
+			 		$_code = 500;
+		 			$jsonArray["hataMesaj"] = "Sistemsel Bir Hata Oluştu";
+				}
+			}
+		
+		
+		}else {
+			$_code = 400;
+			$jsonArray["hata"] = TRUE;
+	 		$jsonArray["hataMesaj"] = "soru , kategoriId ve id verilerini göndermediniz.";
+		}
+     }
+     else if ($gelen_veri->action == "sil")
+     {
+        if(isset($gelen_veri->id) && !empty(trim($gelen_veri->id))) {
+            $id = intval($gelen_veri->id);
+           
+                $sil = $db->query("delete from sorular where id='$id'");
                 if( $sil ) {
                     $_code = 200;
-                    $jsonArray["mesaj"] = "Üyelik Silindi.";
+                    //$jsonArray["mesaj"] = "Silindi.";
                 }else {
-                    // silme başarısız ise bilgi veriyoruz. 
                     $_code = 400;
                     $jsonArray["hata"] = TRUE;
                      $jsonArray["hataMesaj"] = "Sistemsel Bir Hata Oluştu";
                 }
-            }else {
-                $_code = 400; 
-                $jsonArray["hata"] = TRUE; // bir hata olduğu bildirilsin.
-                $jsonArray["hataMesaj"] = "Geçersiz id"; // Hatanın neden kaynaklı olduğu belirtilsin.
-            }
+          
         }else {
             $_code = 400;
             $jsonArray["hata"] = TRUE; // bir hata olduğu bildirilsin.
-            $jsonArray["hataMesaj"] = "Lütfen user_id değişkeni gönderin"; // Hatanın neden kaynaklı olduğu belirtilsin.
+            $jsonArray["hataMesaj"] = "Lütfen id değişkeni gönderin"; // Hatanın neden kaynaklı olduğu belirtilsin.
         }
-    } else if($_SERVER['REQUEST_METHOD'] == "GET") {
-        
-        if(isset($_COOKIE["user"]) && !empty($_COOKIE["user"]))
-        {
-            return json_decode($_COOKIE["user"],true);
-        }
-        return null;       
+     }
+}
+else if($_SERVER['REQUEST_METHOD'] == "GET") {
+	
     
-    }
-    else {
-        $_code = 406;
-        $jsonArray["hata"] = TRUE;
-         $jsonArray["hataMesaj"] = "Geçersiz method!";
-    }
-    
-    
-    SetHeader($_code);
-    $jsonArray[$_code] = HttpStatus($_code);
-    echo json_encode($jsonArray);
-    
-    */
+	
+		$query = $db->query("select s.soru , s.createdAt , c.ad as kategori , s.id as soruID , c.id as kategoriID from sorular s inner join categorys c on s.kategoriID = c.id");
+		
+		if($query->rowCount()) {
+		$bilgiler = $query->fetchAll(PDO::FETCH_ASSOC);
+		$jsonArray = $bilgiler;
+		$_code = 200;	
+
+	}
+  else {
+    	$_code = 200;
+ 	$jsonArray["Mesaj"] = "Sorular Bulunamadı !";
+
+
+}
+}
+else {
+	$_code = 406;
+	$jsonArray["hata"] = TRUE;
+ 	$jsonArray["hataMesaj"] = "Geçersiz method!";
+}
+
+
+SetHeader($_code);
+//$jsonArray[$_code] = HttpStatus($_code);
+echo json_encode($jsonArray);
 ?>

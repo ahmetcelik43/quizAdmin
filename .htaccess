@@ -1,4 +1,6 @@
 RewriteEngine on
 RewriteRule ^$ anasayfa.php [QSA,L]
 RewriteRule ^login$ giris.php [QSA,L]
+RewriteRule ^kategori$ kategori.php [QSA,L]
+RewriteRule ^soru$ soru.php [QSA,L]
 

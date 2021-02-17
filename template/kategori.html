@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Quiz Admin</title>
+    <!-- HTML5 Shim and Respond.js IE9 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      <!-- Meta -->
+      {{include('head.html')}}
+
+
+  </head>
+
+  <body>
+      
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+                <div class="ring">
+                    <div class="frame"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+
+            {{include('navbar.html')}}
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    {{include('sidenav.html')}}
+
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+
+                                    <div class="page-body">
+                                        <div class="row">
+                                        <div class="col-md-12 col-xl-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Kategoriler
+                                                <button style="float:right" class="btn btn-outline-primary" onclick="kategoriEkle()" type="button">Ekle</button>
+                                            
+                                            </div>
+                                            <div class="card-block">
+                                            <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            ID
+                                            </td>
+                                            <td>
+                                            Kategori Adı
+                                            </td>
+                                            <td>
+                                            Tarih
+                                            </td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if kategori | length == 0 %}
+                                                <tr>
+                                                    <td colspan="12">Kategori Yok !</td>
+                                                </tr>
+                                                {% else %}
+                                                {% for i in kategori %}
+                                                {% set id = i['id'] %}
+                                                {% set kategoriAdi = i['ad'] %}
+                                                {% set tarih = i['createdAt'] %}
+
+                                                <tr>
+                                                    <td><button title="Güncelle" onclick="guncelle('{{ id }}','{{kategoriAdi}}')"
+                                                    class="btn btn-xs btn-outline-primary"><i class="ti-pencil-alt"></i></button>
+                                                    <button title="Sil" class="btn btn-xs btn-outline-danger" onclick="sil('{{ id }}')">
+                                                    <i class="ti-close"></i></button>
+                                                    <button title="Soruları Göster" onclick="soruGoster('{{ id }}')"
+                                                    class="btn btn-xs btn-outline-primary"><i class="icofont icofont-open-eye"></i></button>
+                                                </td>
+                                                <td>{{id}}</td>
+                                                <td>{{kategoriAdi}}</td> <td>{{tarih}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tbody>
+                                          </table>
+                                           
+                                            </div>
+                                        </div>
+                                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="styleSelector">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fixed-button">
+                    <a class="btn btn-md btn-primary">
+                       Yukarı
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="soruKategori" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                      
+                        <td>
+                        ID
+                        </td>
+                        <td>
+                            Soru
+                            </td>
+                        <td>
+                        Kategori Adı
+                        </td>
+                        <td>
+                        Tarih
+                        </td>
+                        </tr>
+                        </thead>
+                        <tbody id="soruKategoriBody">
+                          
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+              </div>
+            </div>
+        </div>
+    <div class="modal" id="kategoriModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <form class="kategori" novalidate>
+            <div class="form-row">                      
+                <label for="validationCustomUsername">Kategori Adı</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupPrepend"><i class="far fa-envelope-open"></i> </span>
+                  </div>
+                  <input type="text" class="form-control" id="validationCustomUsername" placeholder="Kategori Adı" 
+                  aria-describedby="inputGroupPrepend" required>
+                  
+                </div>
+              
+            </div>
+           
+           
+            <div class="form-row"> 
+                <div class="col-md-12 mb-3">
+                   <button class="btn btn-outline-success" type="submit">Kaydet</button>
+                  </div>
+            </div>  
+        </form>
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+          </div>
+        </div>
+    </div>
+        <!-- Warning Section Starts -->
+        <!-- Older IE warning message -->
+    <!--[if lt IE 9]>
+<div class="ie-warning">
+    <h1>Warning!!</h1>
+    <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web browsers to access this website.</p>
+    <div class="iew-container">
+        <ul class="iew-download">
+            <li>
+                <a href="http://www.google.com/chrome/">
+                    <img src="assets/images/browser/chrome.png" alt="Chrome">
+                    <div>Chrome</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.mozilla.org/en-US/firefox/new/">
+                    <img src="assets/images/browser/firefox.png" alt="Firefox">
+                    <div>Firefox</div>
+                </a>
+            </li>
+            <li>
+                <a href="http://www.opera.com">
+                    <img src="assets/images/browser/opera.png" alt="Opera">
+                    <div>Opera</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.apple.com/safari/">
+                    <img src="assets/images/browser/safari.png" alt="Safari">
+                    <div>Safari</div>
+                </a>
+            </li>
+            <li>
+                <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                    <img src="assets/images/browser/ie.png" alt="">
+                    <div>IE (9 & above)</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <p>Sorry for the inconvenience!</p>
+</div>
+<![endif]-->
+<!-- Warning Section Ends -->
+<!-- Required Jquery -->
+{{include('script.html')}}
+
+
+<script>
+var window = $(window);
+var nav = $('.fixed-button');
+    window.scroll(function(){
+        if (window.scrollTop() >= 200) {
+         nav.addClass('active');
+     }
+     else {
+         nav.removeClass('active');
+     }
+ });
+ function cikis ()
+ {
+     document.cookie = "kullanici=";
+     window.location.href = "/api/admin/login";
+ }
+</script>
+<script>
+
+var forms = document.getElementsByClassName('kategori');
+var action = "" ,id;
+Array.prototype.filter.call(forms, function(form) {
+  form.addEventListener('submit', function(event) {
+    
+    event.preventDefault();
+    event.stopPropagation();
+    if (form.checkValidity() === true) {
+      action == "ekle" && ekleRequest();
+      action == "guncelle" && guncelleRequest(id);
+    }
+    else
+    toastr.error("Alanları Doldurunuz");
+  }, false);
+});
+ 
+  function kategoriEkle()
+  {
+     $('#kategoriModal').modal('show');
+     $('.modal-title').html('Kategori Ekle');
+     $('#validationCustomUsername').trigger('focus')
+     action = "ekle";  
+
+  }
+  function guncelle(id_ ,kategori)
+  {
+    $('#kategoriModal').modal('show');
+    $('.modal-title').html('Kategori Güncelle');
+    $('#validationCustomUsername').val(kategori);
+    action = "guncelle";  
+    id = id_;
+  }
+  function sil(id_)
+  {
+    
+    var data_ = JSON.stringify({ action :"sil" , "id": id_});
+
+     $.ajax(
+        {
+            url:"https://quizapp1234.herokuapp.com/kategori",
+            method:"POST",
+            crossDomain: true,   
+            type:'application/json',
+            data: data_
+        }
+    ).done(function(res){
+        window.location.reload();
+    }).fail(function(err){
+        toastr.error("Hata");
+    });
+
+  }
+  function guncelleRequest(id)
+  {
+    var data = JSON.stringify({action :"guncelle"  ,id:id , ad:$('#validationCustomUsername').val().toString().trim() });
+     $.ajax(
+        {
+            url:"https://quizapp1234.herokuapp.com/kategori",
+            method:"POST",
+            crossDomain: true,   
+            type:'application/json',
+            data: data
+        }
+    ).done(function(res){
+        window.location.reload();
+    }).fail(function(err){
+        toastr.error("Hata");
+    });
+  }
+  function ekleRequest()
+  {
+    var data = JSON.stringify({ kategoriAdi :$('#validationCustomUsername').val().toString().trim() ,action : "ekle" });
+     $.ajax(
+        {
+            url:"https://quizapp1234.herokuapp.com/kategori",
+            method:"POST",
+            crossDomain: true,   
+            type:'application/json',
+            data: data
+        }
+    ).done(function(res){
+        window.location.reload();
+    }).fail(function(err){
+        toastr.error("Hata");
+    });
+  }
+  
+  function soruGoster(kategoriID)
+  {
+    //var data = JSON.stringify({ kategoriAdi :$('#validationCustomUsername').val().toString().trim() ,action : "ekle" });
+     $.ajax(
+        {
+            url:"https://quizapp1234.herokuapp.com/soru/kategori?kategoriID=" + parseInt(kategoriID),
+            method:"GET",
+            crossDomain: true,   
+            type:'application/json',
+        }
+    ).fail(function(err){
+        toastr.error("Hata");
+    })
+    .done(function(res){
+     if(!res.Mesaj){
+     var html = '<tr><td>'+res[0].soruID+'</td><td>'+res[0].soru+'</td><td>'+res[0].kategoriAdi+'</td><td>'+res[0].createdAt+'</td></tr> '
+     $('#soruKategori').modal('show');
+     $('#soruKategoriBody').html('');
+     $('#soruKategoriBody').html(html);
+     return;
+     }
+     var html = '<tr><td colspan="12">Soru Bulunamadı!</td></tr> '
+     $('#soruKategori').modal('show');
+     $('#soruKategoriBody').html('');
+     $('#soruKategoriBody').html(html);
+    })
+  }
+  </script>
+</body>
+
+</html>
