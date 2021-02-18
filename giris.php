@@ -84,9 +84,8 @@ Array.prototype.filter.call(forms, function(form) {
         }
     ).done(function(res){
       document.cookie = "kullanici=" + JSON.stringify(res);
-      window.location.href = "http://localhost:90/api/admin";
+      window.location.href = "https://quizadmin1.herokuapp.com/";
 
-      //header("Location: http://localhost:90/api/admin");
     }).fail(function(err){
         alert("Login Başarısız");
     });
