@@ -8,7 +8,7 @@
   ]);
 
 
-    $url = "http://localhost:90/api/admin/";
+    $url = "https://quizadmin1.herokuapp.com";
     $kategoriLink = $url . 'kategori';
     $sorularLink = $url . 'soru';
     $kullanicilarLink = $url . 'kullanicilar';
