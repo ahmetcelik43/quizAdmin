@@ -8,7 +8,7 @@
   ]);
 
 
-    $url = "https://quizadmin1.herokuapp.com";
+    $url = "https://quizadmin1.herokuapp.com/";
     $kategoriLink = $url . 'kategori';
     $sorularLink = $url . 'soru';
     $kullanicilarLink = $url . 'kullanicilar';
